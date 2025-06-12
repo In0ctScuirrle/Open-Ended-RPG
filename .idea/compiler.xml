@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="Campaign-Master" target="21" />
+      <module name="Campaign-Master.main" target="21" />
+      <module name="Campaign-Master.test" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
