@@ -1,6 +1,6 @@
 package lu.embellishedduck.campaign_master.main;
 
-public class Main {
+public class Runner {
 
     // CONSTANTS
     public static final String GAME_DIRECTORY = System.getProperty("user.home") + "/EmbellishedDuck/Quarklus";
