@@ -1,5 +1,7 @@
 package lu.embellishedduck.campaign_master.ruleset.probability;
 
+import java.util.Random;
+
 public class FairDie {
 
     //=======================
