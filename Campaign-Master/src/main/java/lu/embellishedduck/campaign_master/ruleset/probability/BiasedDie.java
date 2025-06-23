@@ -10,7 +10,7 @@ public class BiasedDie extends FairDie {
     //=======================
     private final int[] biasedFaceValues;
 
-	private double distorter;
+	private final double distorter;
 
 
 	//=============
