@@ -10,5 +10,5 @@ repositories {
 }
 
 dependencies {
-
+    implementation("com.jsoniter:jsoniter:0.9.23")
 }

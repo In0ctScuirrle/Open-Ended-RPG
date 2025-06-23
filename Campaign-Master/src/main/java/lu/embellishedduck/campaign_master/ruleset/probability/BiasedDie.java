@@ -1,5 +1,6 @@
 package lu.embellishedduck.campaign_master.ruleset.probability;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class BiasedDie extends FairDie {
@@ -7,72 +8,68 @@ public class BiasedDie extends FairDie {
     //=======================
     // INSTANTIATE VARIABLES
     //=======================
-    private int[] biasedValues;    
+    private final int[] biasedFaceValues;
 
-    private float distorter;
+	private double distorter;
 
-    //=============
-    // CONSTRUCTOR
-    //=============
-    public BiasedDie(int numberOfFaces, int faceValue, int... biasedValues, float distorter) {
 
-        super(numberOfFaces, faceValue);
+	//=============
+	// CONSTRUCTOR
+	//=============
+	public BiasedDie(int numberOfFaces, double faceValue, double distorter, int... biasedValues) {
 
-	    if(distorter >= 1 || distorter <= 0) {
+		super(numberOfFaces, faceValue);
 
-            distorter = 0.5
-            throw new IllegalValueException("The distorter must be a positive rational number (fraction) between 0 and 1");
+		this.biasedFaceValues = biasedValues;
+		if (distorter <= 0) throw new IllegalArgumentException("The value of the distorter must be a positive decimal number between 1 and 0. Please input a valid value.");
+		this.distorter = distorter;
 
-        }//End of If-Statement
-        
-        this.biasedValues = biasedValues;
-        this.distorter = distorter;
+	}//End of Constructor
 
-    }//End of Constructor
 
-    
-    @Override
-    public int roll() {
+	@Override
+	public double roll() {
 
-	// Local Variables
-	Random random = new Random();
+		// Local Variables
+		Random random = new Random();
 
-	int result = 0;
+		int numberOfFaces = getNumberOfFaces();
 
-	float cumulativeProbability = 0.0f;
-	float randomValue = random.nextFloat();
-        float[] probabilities = new float[numberOfFaces];
+		double result = 0;
+		double cumulativeProbability = 0.0d;
+		double randomValue = random.nextDouble();
+		double[] probabilities = new double[numberOfFaces];
 
-	// Calculate probability
-	for(int i = 0; i < numberOfFaces; i++) {
+		// Calculate the probabilities of each face
+		for (int index = 0; index < numberOfFaces; index++) {
 
-	    if(isBiasedValue(i + 1, biasedValues)) probabilities[i] = 1.0f / numberOfFaces;
-	    else probabilities[i] = 1.0f / numberOfFaces - (distorter * (1 / n - biasedValues.length));
+			if (index == Arrays.binarySearch(biasedFaceValues, index)) probabilities[index] = 1.0d / numberOfFaces;// If the index or face number is one of the biased face values then calculate the biased probability.
+			else probabilities[index] = 1.0d / numberOfFaces - (distorter * (1.0d / numberOfFaces - biasedFaceValues.length));// Otherwise calculate the uniform probability.
 
-	    cumulativeProbability += probabilities[i];
+			cumulativeProbability += probabilities[index];// Add all the calculated probabilities, this is needed in the next step.
 
-	}//End of For-Loop
+		}//End of For-Loop
 
-	// Check if the sum of the probabilities = 1
-	if (cumulativeProbability != 1.0f) throw new ArithmeticException("Sum of probabilities is not 1, impossible probability.");
-	cumulativeProbability == 0.0f;
+		// The next step is to check if the sum of the probabilities (cumulativeProbability) is = 1, if not something is wrong because the sum of all probabilities must be 1.
+		if (cumulativeProbability != 1.0d) throw new ArithmeticException("Sum of probabilities is not 1, impossible probability");
+		cumulativeProbability = 0.0d;// Resetting the cumulative probability to use in the next step.
 
-	// Determine the outcome
-        for(int i = 0; i < numberOfFaces; i++) {
+		// Determine the outcome of the dice roll, including the biased face values
+		for (int index = 0; index < numberOfFaces; index++) {
 
-	    cumulativeProbability += probabilities[i];
-	    
-	    if (randomValue <= cumulativeProbability) {
+			cumulativeProbability += probabilities[index];
 
-		result = (i + 1) * faceValue;
-		break;
+			if (randomValue <= cumulativeProbability) {
 
-	    }//End of If-Statement
+				result = (index + 1) * getFaceValue();
+				break;
 
-	}//End of For-Loop
+			}//End of If-Statement
 
-	return result;
+		}//End of For-Loop
 
-    }//End of Method
+		return result;
+
+	}//End of Method
 
 }//End of Class
